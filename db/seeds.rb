@@ -9,14 +9,16 @@
 
 #FAKE DATA **************
 begin
-names = "KidZania Jakarta,Hotel Indonesia Kempinski,MARQUEE Serviced Virtual Office,Swiss-Belhotel Mangga Besar,FIK PROPERTY JAKARTA INDONESIA".split(",")
-postalcodes = "12190,10310,12920,10710,10440".split(",")
+names = "KidZania Jakarta,Hotel Indonesia Kempinski,Marqee Serviced Virtual Office,Swiss-Belhotel Mangga Besar,Fik Property, IkiOke,Toko Bunga Flower Shop,Marks & Spencer,M Pacific Place,HargaMurah.COM,Cassis Restaurant,Green Central City,Dr Cipto Mangunkusumo,Herbal Store".split(",")
+
+postalcodes = "12190,10310,12920,10710,10440,17131,11620,10270,12190,10730,10220,11120,10430,17125".split(",")
+
+cities = "Jakarta,Jakarta,Jakarta,Jakarta,Jakarta,Jakarta Barat,Jakarta Barat,Jakarta Pusat,Jakarta Selatan,Jakarta Pusat,Jakarta Pusat,Jakarta Barat,Jakarta Pusat,Jakarta".split(",")
 
 names.each_with_index { |name,index|
-    Vendor.create(name: name, country: "Indonesia", state: "Republic of Indonesia", city: "Jakarta", postalcode: postalcodes[index], telephone: "222-222-2222", price: 30.0, note: "Sale on water started saturday")
+    Vendor.create(name: name, country: "Indonesia", state: "Republic of Indonesia", city: cities[index], postalcode: postalcodes[index], telephone: "222-222-2222", price: 30.0, note: "Sale on water started saturday")
 }
 
-rescue ActiveRecord::RecordInvalid => RecordInvalid
+rescue ActiveRecord::RecordInvalid => invalid
   puts invalid.record.errors
 end
-
