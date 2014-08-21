@@ -1,22 +1,48 @@
-VendorMap.View = function(controller) {
-  this.controller = controller
+VendorMap.View = function() {
 }
 
 //Only renderMarkers and renderStats are called by the controller - other methods are used by these 2 methods
 VendorMap.View.prototype = {
-  //Called by initialize.js
-  drawMap: function(initialLatitude,initialLongitude,initialZoom){
-    var thisMap = this.controller.map
-    if (!thisMap) return;
-    var map = thisMap.setView([initialLatitude,initialLongitude],initialZoom) // setView is a Leaflet function
-    map.addLayer(this.controller.osm) // addLayer is a Leaflet function
+
+//**********Making the Map ***************
+  //Add leaflets map - can use leaflets library because added Leaflets CSS and JS link in Layout.erb
+  newMap: function(){
+    if ($("#map").length < 1) return;
+    var newMap = new L.map('map')
+    this.map = newMap //creates a map attribute for the view object instance
   },
 
-  //Called by vendormap-this.controller.js
-  renderMarkers: function(vendorList, map){ //creates the info boxes for the circles/pinpoints
+  initializeMapData: function(startLat,startLong,startZoom){
+    this.initialMapCoords = new L.LatLng(startLat,startLong)
+    this.initialZoom = startZoom
+  },
+
+  //Add open stree maps layer using Leaflets
+  initializeOSM: function(){
+    var osmUrl    ='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    var osmAttrib ='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors ';
+    var osm = new L.TileLayer(osmUrl, {minZoom: 2, maxZoom: 20, attribution: osmAttrib});
+    this.osm = osm //creates osm attribute for the view object instance
+  },
+
+  //Calls the above 3 methods so that initialize just calls this function
+  initializeMap: function(startLat,startLong,startZoom){
+    this.newMap()
+    this.initializeMapData(startLat,startLong,startZoom)
+    this.initializeOSM()
+  },
+
+  //Called by initialize.js
+  drawMap: function(){
+    if (!this.map) return;
+    var map = this.map.setView(this.initialMapCoords,this.initialZoom) // setView is a Leaflet function
+    map.addLayer(this.osm) // addLayer is a Leaflet function
+  },
+
+  //Called by vendormap-controller.js
+  renderMarkers: function(vendorList){ //creates the info boxes for the circles/pinpoints
     console.log("got to renderMarkers")
     console.log(vendorList)
-    var map = map //sets fed map to map
     var markers = new L.MarkerClusterGroup() //creates Leaflet markers collection object
     for (i=0; i<vendorList.length; i++){ //for each vendor JS object in the vendorList
         var lat=vendorList[i].latitude
@@ -26,7 +52,7 @@ VendorMap.View.prototype = {
         this.bindThisPopup(marker,content) //binds the content object to the Leaflet market object with Leaflet-defined method (see below)
         markers.addLayer(marker) // adds marker to markers collection
     }
-    map.addLayer(markers)
+    this.map.addLayer(markers)
   },
 
   //Called by vendormap-controller.js

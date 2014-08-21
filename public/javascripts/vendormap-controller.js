@@ -1,47 +1,27 @@
 //Constructor Function for VendorMap.Controller
-VendorMap.Controller = function(){}
+VendorMap.Controller = function(view){
+  this.view = view
+}
 
 //Add several methods to VendorMap.Controller prototype
 VendorMap.Controller.prototype = {
-
-//**********Making the Map ***************
-  //Add leaflets map - can use leaflets library because added Leaflets CSS and JS link in Layout.erb
-  newMap: function(){
-    if ($("#map").length < 1) return;
-    var newMap = new L.map('map')
-    this.map = newMap //creates a map attribute for the controller object instance
-  },
-
-  initializeMapData: function(startLat,startLong,startZoom){
-    this.initialMapCoords = new L.LatLng(startLat,startLong)
-    this.initialZoom = startZoom
-  },
-
-  //Add open stree maps layer using Leaflets
-  initializeOSM: function(){
-    var osmUrl    ='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-    var osmAttrib ='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors ';
-    var osm = new L.TileLayer(osmUrl, {minZoom: 2, maxZoom: 20, attribution: osmAttrib});
-    this.osm = osm //creates osm attribute for the controller object instance
-  },
-
-  //Calls the above 3 methods so that initialize just calls this function
-  initializeMap: function(startLat,startLong,startZoom){
-    this.newMap()
-    this.initializeMapData(startLat,startLong,startZoom)
-    this.initializeOSM()
+  renderMap: function(initialLatitute,initialLongitude,initialZoom) {
+    this.fetchUsers()
+    this.view.initializeMap(initialLatitute,initialLongitude,initialZoom)
+    this.view.drawMap()
   },
 
   //Makes AJAX request to get vendors data as array of JSON objects
   fetchUsers: function(){
-    var controller = this;
     $.ajax({
       url: '/vendors',
       type: 'GET',
     }).done(function(data){ //data is an arrayof JSON objects that is returned from my Sinatra route get '/vendors' that queries my AR database
       console.log("success!")
-      controller.facilitateMarkers(data) //Calls controller function that renders markers and stats in the view
-    }).fail(function() {
+      // this.masterRoster = new VendorMap.MasterRoster
+      // var vendorJ this.vendorListFromJSON(data)
+      this.facilitateMarkers(data) //Calls controller function that renders markers and stats in the view
+    }.bind(this)).fail(function() {
       console.log("failboat!")
     })
   },
@@ -50,7 +30,7 @@ VendorMap.Controller.prototype = {
     var vendorList = this.vendorListFromJSON(serverData)
     console.log("got to facilitateMarkers")
     console.log(vendorList)
-    this.view.renderMarkers(vendorList, this.map) //send vendor list and current map to the view
+    this.view.renderMarkers(vendorList) //send vendor list and current map to the view
     this.view.renderStats(vendorList.length)
   },
 
