@@ -32,8 +32,7 @@ gem 'jasmine'
 gem 'rspec'
 gem 'shoulda-matchers'
 gem 'pry'
-gem 'debugger'
-# end
+#end
 
 # group :test do
 gem 'factory_girl_rails'
