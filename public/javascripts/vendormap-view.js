@@ -31,17 +31,17 @@ VendorMap.View.prototype = {
   },
 
   //Called by vendormap-controller.js
-  renderStats: function(cityCount){ //creates the circles/pinpoints
+  renderStats: function(vendorCount){ //creates the circles/pinpoints
     console.log("got to renderStats")
     var newDiv = document.createElement('div')
     newDiv.classList.add('vendor-stats')
-    newDiv.innerText = this.setStatDivText(cityCount)
+    newDiv.innerText = this.setStatDivText(vendorCount)
     document.getElementById('map').appendChild(newDiv)
   },
 
-  setStatDivText: function(cityCount){
+  setStatDivText: function(vendorCount){
     console.log("got to setStatDivText")
-    var divText = "VendorMap: find water vendors in " + cityCount + "Indonesian areas"
+    var divText = "AtmaGo Water Vendor Map: Search through over "+ vendorCount + " water vendors in Indonesia"
     return divText
   },
 
@@ -54,45 +54,31 @@ VendorMap.View.prototype = {
 
   formatPopup: function(vendor){
     var thisVendor = {
-      name: vendor.name,
-      price: vendor.price/vendor.quantity,
-      // address: [
-      //   {vendor.rt},
-      //   {vendor.rw},
-      //   {vendor.city},
-      // ]
-      // socialLinks: [
-      //   { url: vendor.github_profile_link,     icon: 'fa fa-github fa-lg'},
-      //   { url: vendor.twitter_profile_link,    icon: 'fa fa-twitter fa-lg'},
-      //   { url: vendor.facebook_profile_link,   icon: 'fa fa-facebook fa-lg'},
-      //   { url: vendor.linked_in_profile_link,  icon: 'fa fa-linkedin fa-lg'},
-      //   { url: vendor.blog_link,               icon: 'fa fa-tumblr fa-lg'}
-      //   ]
+      "name": vendor.name,
+      "price": "Rp "+vendor.price+"/L",
+      "address": [
+        {"addr": vendor.city},
+        {"addr": vendor.country},
+        {"addr": vendor.postalcode}
+      ]
     }
 
     var vendorNameTemplate = "<div class='vendor-name'>{{name}}</div>";
     var vendorNameHtml = Mustache.to_html(vendorNameTemplate, thisVendor);
 
-    var vendorPriceTemplate = "<div class='vendor-name'>{{price}}</div>";
+    var vendorPriceTemplate = "<div class='vendor-price'>{{price}}</div>";
     var vendorPriceHtml = Mustache.to_html(vendorPriceTemplate, thisVendor);
 
-    // var addressList = "<ul class='social-media'>{{#addressParts}}<li class='social-link'></li>{{/addressParts}}</ul>";
-    // var vendorAddressHtml = Mustache.to_html(addressList, thisVendor);
-
-    // var socialMedia = "<ul class='social-media'>{{#socialLinks}}<li class='social-link'><a href='{{url}}' target='_blank'><i i class='{{icon}}'></i></a></li>{{/socialLinks}}</ul>";
-    // var vendorSocialMediaHtml = Mustache.to_html(socialMedia, thisVendor);
+    var addressList = "<ul class='address'>{{#address}}<li class='address-part'>{{addr}}</li>{{/address}}</ul>";
+    var vendorAddressHtml = Mustache.to_html(addressList, thisVendor);
+    console.log(vendorAddressHtml)
 
     var vendorPopupContent = [
                     "<div class='user-popup'>",
                     vendorNameHtml,
-                    // vendorSocialMediaHtml,
                     vendorPriceHtml,
-                    vendor.rt,
-                    vendor.rw,
-                    vendor.city,
-                    // vendorAddressHtml,
-                    vendor.note,
-                    vendor.current_location,
+                    vendorAddressHtml,
+                    vendor.telephone,
                     "</div>"
                   ]
     return vendorPopupContent.join("")

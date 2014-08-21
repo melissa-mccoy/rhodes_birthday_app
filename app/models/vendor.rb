@@ -1,17 +1,15 @@
 class Vendor < ActiveRecord::Base
-  # protect_from_forgery with: :exception
-  validates :name, presence: true
+  extend Geocoder::Model::ActiveRecord
   geocoded_by :address
-  after_validation :geocode #, :if => lambda{ |user| user.address_changed? }
+  before_validation :geocode #, :if => :address_changed?
+  validates :name, presence: true
+  validates :latitude, presence: {is: true, message: "Missing latitude for this record."}
+  validates :longitude, presence: {is: true, message: "Missing longitude for this record."}
 
   def address
-    if note == "None"
-      return [city, rt+"/"+rw].compact.join(', ')
-    else
-      return [city, rt+"/"+rw, note].compact.join(', ')
-    end
+    p "called address"
+    return name+", "+city+", "+postalcode+", "+country
   end
-
 end
 
 

@@ -33,7 +33,7 @@ VendorMap.Controller.prototype = {
   initializeOSM: function(){
     var osmUrl    ='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
     var osmAttrib ='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors ';
-    var osm = new L.TileLayer(osmUrl, {minZoom: 2, maxZoom: 10, attribution: osmAttrib});
+    var osm = new L.TileLayer(osmUrl, {minZoom: 2, maxZoom: 20, attribution: osmAttrib});
     this.osm = osm
   },
 
@@ -62,16 +62,20 @@ VendorMap.Controller.prototype = {
     var controller = this //consider just using this
     var vendorList = controller.vendorListFromJSON(serverData)
     console.log("got to facilitateMarkers")
+    console.log(vendorList)
     controller.view.renderMarkers(vendorList, controller.map) //send vendor list and current map to the view
-    controller.view.renderStats(controller.masterRoster.uniqueLocationsCount)
+    controller.view.renderStats(vendorList.length)
   },
 
   vendorListFromJSON: function(vendorData){
     var controller = this
     controller.masterRoster = new VendorMap.MasterRoster //object contains a vendorList array and a uniqueLocationsCount attribute
     var vendorList = controller.masterRoster.vendorList
+    vendorData = JSON.parse(vendorData)
     for(var i=0; i<vendorData.length; i++){ //loops through vendorData JSON objects array
+      console.log("inside for loop")
       var thisVendor = vendorData[i] //grabs a JSON object in the array which is the hash of args needed to create a vendor object
+      console.log(thisVendor)
       if(controller.validateLocation(thisVendor)){
         vendor = new VendorMap.Vendor(thisVendor) //creates Vendor JS object by feeding JSON object piece (array of args) to Vendor model constructor
         console.log("found vendor with lat and long")
@@ -79,7 +83,7 @@ VendorMap.Controller.prototype = {
         vendorList.push(vendor) //adds Vendor JS object to vendorList of master roster
       }
     }
-    controller.generateUniqueLocations(vendorList) //create CityList that holds array of unique cities+their longitudes and also sets the uniquecity count for the master roster
+    controller.generateUniqueLocations(vendorList) //create AreaList that holds array of unique cities+their longitudes and also sets the uniqueArea count for the master roster
     return vendorList
   },
 
@@ -90,9 +94,9 @@ VendorMap.Controller.prototype = {
   },
 
   generateUniqueLocations: function(vendorList){
-    var cityList = new VendorMap.CityList //Creates a CityList object that has uniqueCities and cityLatitudes arrays and several methods
-    cityList.populateUniqueCities(vendorList) //Adds only unique cities to cityList
-    this.masterRoster.uniqueLocationsCount = cityList.uniqueCities.length //Counts number of unique cities equal to the master roster unique location count
+    var areaList = new VendorMap.AreaList() //Creates a AreaList object that has uniqueAreas and areaLatitudes arrays and several methods
+    areaList.populateUniqueAreas(vendorList) //Adds only unique cities to areaList
+    this.masterRoster.uniqueLocationsCount = areaList.uniqueAreas.length //Counts number of unique areas equal to the master roster unique location count
   }
 }
 

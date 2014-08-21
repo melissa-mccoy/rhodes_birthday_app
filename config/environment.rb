@@ -23,8 +23,7 @@ require 'uri'
 require 'pathname'
 
 require 'geocoder'
-require "geocoder/railtie"
-Geocoder::Railtie.insert
+
 # Some helper constants for path-centric logic
 APP_ROOT = Pathname.new(File.expand_path('../../', __FILE__))
 

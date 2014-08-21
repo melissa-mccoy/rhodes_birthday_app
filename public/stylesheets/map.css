@@ -18,21 +18,30 @@ body {
   color: rgba(110, 204, 57, 0.6);
 }
 
-ul.social-media {
+ul.address {
   padding-left: 0px;
 }
 
-li.social-link {
+li.address-part {
   list-style: none;
   display: inline;
   padding-right: 10px;
+  font-size: 1em;
+  color: #2c3e50;
 }
 
 .vendor-name {
   text-decoration: none;
-  font-size: 1.5em;
+  font-size: 1.1em;
   font-weight: bold;
-  color: #3F3C3C;
+  color: #2c3e50;
+}
+
+.vendor-price {
+  text-decoration: none;
+  font-size: 1em;
+  font-weight: bold;
+  color: #2c3e50;
 }
 
 .vendor-stats {
