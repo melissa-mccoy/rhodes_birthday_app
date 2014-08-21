@@ -5,15 +5,14 @@ VendorMap.View = function(controller) {
 //Only renderMarkers and renderStats are called by the controller - other methods are used by these 2 methods
 VendorMap.View.prototype = {
   //Called by initialize.js
-  drawMap: function(){
-    var controller = this.controller
-    var thisMap = controller.map
+  drawMap: function(initialLatitude,initialLongitude,initialZoom){
+    var thisMap = this.controller.map
     if (!thisMap) return;
-    var map = thisMap.setView(controller.initialMapCoords,controller.initialZoom) // setView is a Leaflet function
-    map.addLayer(controller.osm) // addLayer is a Leaflet function
+    var map = thisMap.setView([initialLatitude,initialLongitude],initialZoom) // setView is a Leaflet function
+    map.addLayer(this.controller.osm) // addLayer is a Leaflet function
   },
 
-  //Called by vendormap-controller.js
+  //Called by vendormap-this.controller.js
   renderMarkers: function(vendorList, map){ //creates the info boxes for the circles/pinpoints
     console.log("got to renderMarkers")
     console.log(vendorList)

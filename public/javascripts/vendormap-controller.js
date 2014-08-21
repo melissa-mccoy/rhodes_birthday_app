@@ -1,23 +1,10 @@
 //Constructor Function for VendorMap.Controller
-VendorMap.Controller = function(){
-
-}
-
-//Add osmInitializer to VendorMap.Controller prototype
-VendorMap.Controller.prototype = {
-
-  osmInitializer: function(){
-    var osm = {}
-    return osm
-  }
-}
-
-//Why create controller function twice? Consider removing
-VendorMap.Controller = function(){
-}
+VendorMap.Controller = function(){}
 
 //Add several methods to VendorMap.Controller prototype
 VendorMap.Controller.prototype = {
+
+//**********Making the Map ***************
   //Add leaflets map - can use leaflets library because added Leaflets CSS and JS link in Layout.erb
   newMap: function(){
     if ($("#map").length < 1) return;
@@ -30,14 +17,15 @@ VendorMap.Controller.prototype = {
     this.initialZoom = startZoom
   },
 
+  //Add open stree maps layer using Leaflets
   initializeOSM: function(){
     var osmUrl    ='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
     var osmAttrib ='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors ';
     var osm = new L.TileLayer(osmUrl, {minZoom: 2, maxZoom: 20, attribution: osmAttrib});
-    this.osm = osm
+    this.osm = osm //creates osm attribute for the controller object instance
   },
 
-  //Calls the above 3 methods so that initialize just calls this functino
+  //Calls the above 3 methods so that initialize just calls this function
   initializeMap: function(startLat,startLong,startZoom){
     this.newMap()
     this.initializeMapData(startLat,startLong,startZoom)
@@ -59,31 +47,29 @@ VendorMap.Controller.prototype = {
   },
 
   facilitateMarkers: function(serverData){
-    var controller = this //consider just using this
-    var vendorList = controller.vendorListFromJSON(serverData)
+    var vendorList = this.vendorListFromJSON(serverData)
     console.log("got to facilitateMarkers")
     console.log(vendorList)
-    controller.view.renderMarkers(vendorList, controller.map) //send vendor list and current map to the view
-    controller.view.renderStats(vendorList.length)
+    this.view.renderMarkers(vendorList, this.map) //send vendor list and current map to the view
+    this.view.renderStats(vendorList.length)
   },
 
   vendorListFromJSON: function(vendorData){
-    var controller = this
-    controller.masterRoster = new VendorMap.MasterRoster //object contains a vendorList array and a uniqueLocationsCount attribute
-    var vendorList = controller.masterRoster.vendorList
+    this.masterRoster = new VendorMap.MasterRoster //object contains a vendorList array and a uniqueLocationsCount attribute
+    var vendorList = this.masterRoster.vendorList
     vendorData = JSON.parse(vendorData)
     for(var i=0; i<vendorData.length; i++){ //loops through vendorData JSON objects array
       console.log("inside for loop")
       var thisVendor = vendorData[i] //grabs a JSON object in the array which is the hash of args needed to create a vendor object
       console.log(thisVendor)
-      if(controller.validateLocation(thisVendor)){
+      if(this.validateLocation(thisVendor)){
         vendor = new VendorMap.Vendor(thisVendor) //creates Vendor JS object by feeding JSON object piece (array of args) to Vendor model constructor
         console.log("found vendor with lat and long")
         console.log(vendor)
         vendorList.push(vendor) //adds Vendor JS object to vendorList of master roster
       }
     }
-    controller.generateUniqueLocations(vendorList) //create AreaList that holds array of unique cities+their longitudes and also sets the uniqueArea count for the master roster
+    this.generateUniqueLocations(vendorList) //create AreaList that holds array of unique cities+their longitudes and also sets the uniqueArea count for the master roster
     return vendorList
   },
 
