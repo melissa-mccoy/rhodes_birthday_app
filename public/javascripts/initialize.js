@@ -4,4 +4,5 @@ document.addEventListener('DOMContentLoaded', function(){
   vendormap_controller = new VendorMap.Controller(vendormap_view)
   vendormap_view.drawMap()
   vendormap_controller.populateMap()
+  vendormap_controller.addAllEventListeners()
 });

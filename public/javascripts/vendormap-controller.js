@@ -1,11 +1,44 @@
 VendorMap.Controller = function(view){
   this.view = view
   this.vendorList = []
-  this.areaList = new VendorMap.AreaList()
+  this.displayList = []
 }
 
 VendorMap.Controller.prototype = {
 
+  addAllEventListeners: function() {
+    this.view.map.on('zoomend', this.populateDisplay.bind(this))
+    this.view.map.on('dragend', this.populateDisplay.bind(this))
+    console.log(this.view.searchNearbyButton)
+    this.view.searchNearbyButton.on('click', this.directView.bind(this))
+    // this.view.myLocationButton.on('click', this.directView.bind(this))
+  },
+
+//For search bar
+  directView: function(event) {
+    console.log("got to directView")
+    event.preventDefault();
+    $.ajax({
+      url: '/location',
+      type: 'POST',
+      data: $('form').serialize()
+    }).done(function(data){
+      console.log("success!")
+      console.log(data)
+      if(data.length == 0) {
+        console.log("could not find user location") }
+      else {
+        var data = JSON.parse(data)
+        var southWest = L.latLng(data["southwest"]["lat"], data["southwest"]["lng"])
+        var northEast = L.latLng(data["northeast"]["lat"], data["northeast"]["lng"])
+        var bounds = L.latLngBounds(southWest, northEast)
+        var center_coords = bounds.getCenter()
+        this.view.map.setView(center_coords)
+      }
+    }.bind(this))
+  },
+
+//For Populating Vendors as Clusters
   populateMap: function(){
     $.ajax({
       url: '/vendors',
@@ -14,7 +47,6 @@ VendorMap.Controller.prototype = {
       console.log("success!")
       var vendorJsonObjectsCollection = JSON.parse(data)
       this.populateVendorListFromJSON(vendorJsonObjectsCollection)
-      this.areaList.populateUniqueAreas(this.vendorList)
       this.renderView()
     }.bind(this)).fail(function() {
       console.log("failboat!")
@@ -38,9 +70,30 @@ VendorMap.Controller.prototype = {
         this.vendorList.push(vendorJSObject)
       }
     }
-  }
-}
+  },
 
+
+//For Sidebar Display
+  populateDisplay: function() {
+    console.log("inside populateDisplay")
+    this.displayList = []
+    this.view.setCurrentBounds()
+    for(i=0;i<this.vendorList.length;i++) {
+      if(this.checkForInView(this.vendorList[i])) {
+        this.displayList.push(this.vendorList[i])
+      }
+    }
+    this.view.renderDisplay(this.displayList)
+  },
+
+  checkForInView: function(vendorJSObject) {
+    console.log("inside populateDisplay")
+    var lat_test = vendorJSObject.latitude >= this.view.southWestBoundLat && vendorJSObject.latitude <= this.view.northEastBoundLat
+    var lng_test = vendorJSObject.longitude >= this.view.southWestBoundLng && vendorJSObject.longitude <= this.view.northEastBoundLng
+    return lat_test && lng_test
+  }
+
+}
 
 
 
