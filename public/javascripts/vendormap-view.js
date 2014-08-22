@@ -10,7 +10,6 @@ VendorMap.View = function(startLat,startLong,startZoom) {
 VendorMap.View.prototype = {
 
   setCurrentBounds: function(map) {
-    console.log("inside setCurrentBounds")
     this.southWestBoundLat = this.map.getBounds()._southWest.lat
     this.southWestBoundLng = this.map.getBounds()._southWest.lng
     this.northEastBoundLat = this.map.getBounds()._northEast.lat
@@ -18,7 +17,6 @@ VendorMap.View.prototype = {
   },
 
   drawMap: function(){
-    console.log("got to draw Map")
     if (!this.map) return;
     var map = this.map.setView(this.initialMapCoords,this.initialZoom)
     map.addLayer(this.osm)
@@ -35,8 +33,6 @@ VendorMap.View.prototype = {
   },
 
   renderMarkers: function(vendorList){
-    console.log("got to renderMarkers")
-    console.log(vendorList)
     var markers = new L.MarkerClusterGroup()
     for (i=0; i<vendorList.length; i++){
       var marker = L.marker([vendorList[i].latitude,vendorList[i].longitude])
@@ -48,7 +44,6 @@ VendorMap.View.prototype = {
   },
 
   renderStats: function(vendorCount){
-    console.log("got to renderStats")
     var newDiv = document.createElement('div')
     newDiv.classList.add('vendor-stats')
     newDiv.innerText = "AtmaGo Water Vendor Map"
@@ -56,12 +51,9 @@ VendorMap.View.prototype = {
   },
 
   renderDisplay: function(displayList) {
-    console.log("got to renderDisplay")
-    console.log(displayList)
     while(this.displayContainer.hasChildNodes()){
       this.displayContainer.removeChild(this.displayContainer.lastChild);
     }
-    console.log(displayList)
 
     if(displayList.length < 4) {var displayNum = displayList.length }
     else {var displayNum = 4}
@@ -93,14 +85,10 @@ VendorMap.View.prototype = {
 
     var vendorNameTemplate = "<div class='vendor-name'>{{name}}</div>";
     var vendorNameHtml = Mustache.to_html(vendorNameTemplate, thisVendor);
-
     var vendorPriceTemplate = "<div class='vendor-price'>{{price}}</div>";
     var vendorPriceHtml = Mustache.to_html(vendorPriceTemplate, thisVendor);
-
     var addressList = "<ul class='address'>{{#address}}<li class='address-part'>{{addr}}</li>{{/address}}</ul>";
     var vendorAddressHtml = Mustache.to_html(addressList, thisVendor);
-    console.log(vendorAddressHtml)
-
     var vendorPopupContent = [
                     "<div class='"+type+"'>",
                     vendorNameHtml,
@@ -109,8 +97,6 @@ VendorMap.View.prototype = {
                     vendor.telephone,
                     "</div>"
                   ]
-
-    console.log(vendorPopupContent.join(""))
     return vendorPopupContent.join("")
   }
 

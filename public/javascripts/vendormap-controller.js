@@ -9,21 +9,46 @@ VendorMap.Controller.prototype = {
   addAllEventListeners: function() {
     this.view.map.on('zoomend', this.populateDisplay.bind(this))
     this.view.map.on('dragend', this.populateDisplay.bind(this))
-    console.log(this.view.searchNearbyButton)
     this.view.searchNearbyButton.on('click', this.directView.bind(this))
+  },
+
+//For Populating Vendors as Clusters
+  populateMap: function(){
+    $.ajax({
+      url: '/vendors',
+      type: 'GET',
+    }).done(function(data){
+      var vendorJsonObjectsCollection = JSON.parse(data)
+      this.populateVendorListFromJSON(vendorJsonObjectsCollection)
+      this.renderView()
+    }.bind(this)).fail(function() {
+    })
+  },
+
+  populateVendorListFromJSON: function(vendorJsonObjectsCollection){
+    console.log(vendorJsonObjectsCollection.length)
+    for(var i=0; i<vendorJsonObjectsCollection.length; i++){
+      var vendorJsonObject = vendorJsonObjectsCollection[i]
+      if(vendorJsonObject.latitude && vendorJsonObject.longitude){
+        vendorJSObject = new VendorMap.Vendor(vendorJsonObject)
+        this.vendorList.push(vendorJSObject)
+      }
+    }
+  },
+
+  renderView: function(vendorList){
+    this.view.renderMarkers(this.vendorList)
+    this.view.renderStats(this.vendorList.length)
   },
 
 //For search bar
   directView: function(event) {
-    console.log("got to directView")
     event.preventDefault();
     $.ajax({
       url: '/location',
       type: 'POST',
       data: $('form').serialize()
     }).done(function(data){
-      console.log("success!")
-      console.log(data)
       if(data.length == 0) {
         alert("Your location could not be found. Please try again.") }
       else {
@@ -41,44 +66,8 @@ VendorMap.Controller.prototype = {
     })
   },
 
-//For Populating Vendors as Clusters
-  populateMap: function(){
-    $.ajax({
-      url: '/vendors',
-      type: 'GET',
-    }).done(function(data){
-      console.log("success!")
-      var vendorJsonObjectsCollection = JSON.parse(data)
-      this.populateVendorListFromJSON(vendorJsonObjectsCollection)
-      this.renderView()
-    }.bind(this)).fail(function() {
-      console.log("failboat!")
-    })
-  },
-
-  renderView: function(vendorList){
-    console.log("got to renderView")
-    this.view.renderMarkers(this.vendorList)
-    this.view.renderStats(this.vendorList.length)
-  },
-
-  populateVendorListFromJSON: function(vendorJsonObjectsCollection){
-    console.log(vendorJsonObjectsCollection.length)
-    for(var i=0; i<vendorJsonObjectsCollection.length; i++){
-      console.log("inside for loop")
-      var vendorJsonObject = vendorJsonObjectsCollection[i]
-      if(vendorJsonObject.latitude && vendorJsonObject.longitude){
-        console.log("found vendor with lat and long")
-        vendorJSObject = new VendorMap.Vendor(vendorJsonObject)
-        this.vendorList.push(vendorJSObject)
-      }
-    }
-  },
-
-
 //For Sidebar Display
   populateDisplay: function() {
-    console.log("inside populateDisplay")
     this.displayList = []
     this.view.setCurrentBounds()
     for(i=0;i<this.vendorList.length;i++) {
@@ -90,7 +79,6 @@ VendorMap.Controller.prototype = {
   },
 
   checkForInView: function(vendorJSObject) {
-    console.log("inside populateDisplay")
     var lat_test = vendorJSObject.latitude >= this.view.southWestBoundLat && vendorJSObject.latitude <= this.view.northEastBoundLat
     var lng_test = vendorJSObject.longitude >= this.view.southWestBoundLng && vendorJSObject.longitude <= this.view.northEastBoundLng
     return lat_test && lng_test
