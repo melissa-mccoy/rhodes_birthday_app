@@ -74,21 +74,6 @@ VendorMap.View.prototype = {
     }
   },
 
-  // renderSearchOptions: function(location_array) {
-  //   console.log("got to renderSearchOptions")
-  //   console.log(location_array)
-
-  //   if(location_array.length < 4) {var locationNum = location_array.length }
-  //   else {var locationNum = 4}
-
-  //   for(i=0;i<locationNum;i++) {
-  //     var temp = document.createElement('DIV')
-  //     temp.innerHTML = this.formatDiv(displayList[i],'location-display')
-  //     newDiv = temp.firstChild
-  //     document.getElementById('location-container').appendChild(newDiv)
-  //   }
-  // },
-
   bindThisPopup: function(marker, content){
     marker.on('mouseover', function(evt){
       evt.target.bindPopup(content).openPopup()

@@ -12,6 +12,5 @@ post '/location' do
   northeast_coords = result_struct["geometry"]["bounds"]["northeast"]
   southwest_coords = result_struct["geometry"]["bounds"]["southwest"]
   return {southwest: southwest_coords,northeast: northeast_coords}.to_json
-  # return [[southwest_coords["lat"],southwest_coords["lng"]],[northeast_coords["lat"],northeast_coords["lng"]]].to_json
 end
 

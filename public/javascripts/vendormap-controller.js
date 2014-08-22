@@ -11,7 +11,6 @@ VendorMap.Controller.prototype = {
     this.view.map.on('dragend', this.populateDisplay.bind(this))
     console.log(this.view.searchNearbyButton)
     this.view.searchNearbyButton.on('click', this.directView.bind(this))
-    // this.view.myLocationButton.on('click', this.directView.bind(this))
   },
 
 //For search bar
@@ -26,16 +25,20 @@ VendorMap.Controller.prototype = {
       console.log("success!")
       console.log(data)
       if(data.length == 0) {
-        console.log("could not find user location") }
+        alert("Your location could not be found. Please try again.") }
       else {
         var data = JSON.parse(data)
         var southWest = L.latLng(data["southwest"]["lat"], data["southwest"]["lng"])
         var northEast = L.latLng(data["northeast"]["lat"], data["northeast"]["lng"])
         var bounds = L.latLngBounds(southWest, northEast)
         var center_coords = bounds.getCenter()
-        this.view.map.setView(center_coords)
+        this.view.map.setView(center_coords,14)
+        this.populateDisplay()
+        $('.search-nearby-field').value = "Enter Your Location"
       }
-    }.bind(this))
+    }.bind(this)).fail(function(){
+      alert("Your location could not be found. Please try again.")
+    })
   },
 
 //For Populating Vendors as Clusters

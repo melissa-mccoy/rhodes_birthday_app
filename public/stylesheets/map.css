@@ -107,21 +107,7 @@ li.address-part {
   border-top-right-radius: 4px;
 }
 
-.my-location {
-  float: left;
-  margin: 10px 0;
-}
-
-/*.location-container {
-  position:absolute;
-  width:200px;
-  top: 10%;
-  right: 5%;
-
-}
-.location-display {
-  display: block;
-  width:200px;
+.search_button {
   margin: 10px 0;
   padding: 13px;
   background-color: #f4f4f4;
@@ -130,10 +116,15 @@ li.address-part {
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
   font-size: 12px;
   line-height: 14px;
+  padding: 3px;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
 }
-*/
+
+.my-location {
+  float: left;
+  margin: 10px 0;
+}
 
 .footer {
   z-index: 1000;
