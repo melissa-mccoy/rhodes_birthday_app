@@ -47,7 +47,6 @@ GEM
     faker (1.4.3)
       i18n (~> 0.5)
     ffi (1.9.3)
-    geocoder (1.2.4)
     i18n (0.6.11)
     jasmine (2.0.2)
       jasmine-core (~> 2.0.0)
@@ -136,7 +135,6 @@ DEPENDENCIES
   capybara
   factory_girl_rails
   faker
-  geocoder
   jasmine
   jbuilder (~> 2.0)
   jquery

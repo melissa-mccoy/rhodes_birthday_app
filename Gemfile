@@ -11,7 +11,7 @@ gem 'sinatra'
 gem 'unicorn'
 
 #pony to email messages from web server
-gem "pony"
+# gem "pony"
 
 # Use jquery as the JavaScript library
 gem 'jquery'
