@@ -10,8 +10,8 @@ gem 'sinatra'
 # Use unicorn as the app server
 gem 'unicorn'
 
-#geocoder to generate lat,long
-gem "geocoder"
+#pony to email messages from web server
+gem "pony"
 
 # Use jquery as the JavaScript library
 gem 'jquery'
